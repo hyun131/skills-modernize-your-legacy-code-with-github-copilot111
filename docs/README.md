@@ -27,6 +27,29 @@ Implements the account actions and prompts for transaction amounts.
 
 Provides the balance storage interface used by `Operations`. The `READ` operation copies the stored balance to the caller; `WRITE` replaces the stored balance with the caller's value. The initial balance is `1000.00`.
 
+## Program flow
+
+```mermaid
+flowchart TD
+	Start([Start]) --> Menu[MainProgram: display menu]
+	Menu --> Choice{User choice}
+	Choice -->|1: view| Total[Operations: read and display balance]
+	Total --> ReadTotal[DataProgram: READ]
+	ReadTotal --> Menu
+	Choice -->|2: credit| Credit[Operations: read balance and add amount]
+	Credit --> CreditWrite[DataProgram: WRITE updated balance]
+	CreditWrite --> Menu
+	Choice -->|3: debit| Debit[Operations: read balance]
+	Debit --> Funds{Balance >= debit amount?}
+	Funds -->|Yes| DebitWrite[DataProgram: WRITE reduced balance]
+	DebitWrite --> Menu
+	Funds -->|No| Reject[Display insufficient funds]
+	Reject --> Menu
+	Choice -->|4: exit| Exit([Stop])
+	Choice -->|Other| Invalid[Display invalid choice]
+	Invalid --> Menu
+```
+
 ## Account rules and behavior
 
 - The balance starts at `1000.00` and is represented with two decimal places.
